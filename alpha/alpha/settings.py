@@ -16,7 +16,10 @@ NEWSPIDER_MODULE = 'alpha.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'alpha (+http://www.yourdomain.com)'
+# USER_AGENT = 'alpha (+http://www.yourdomain.com)'
+
+# Set a new USER_AGENT so that I don't look like a bot!
+USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.86 Safari/537.36'
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 CONCURRENT_REQUESTS=1
