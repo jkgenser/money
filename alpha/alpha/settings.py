@@ -82,7 +82,12 @@ DEFAULT_REQUEST_HEADERS = {
 #ITEM_PIPELINES = {
 #    'alpha.pipelines.SomePipeline': 300,
 #}
-ITEM_PIPELINES = ['alpha.pipelines.ArticleLinksPipeline']
+ITEM_PIPELINES = {'alpha.pipelines.ArticleLinksPipeline': 100,
+                  'alpha.pipelines.SaveArticleInfoPipeline': 200
+                  }
+
+ARTICLE_LIST_PIPELINE_ENABLED = False
+ARTICLE_META_PIPELINE_ENABLED = True
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
