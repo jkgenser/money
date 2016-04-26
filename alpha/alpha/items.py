@@ -13,6 +13,6 @@ class Article(scrapy.Item):
     # name = scrapy.Field()
     article_links = scrapy.Field()
     author_links = scrapy.Field()
-    time = scrapy.Field()
+    time_pub = scrapy.Field()
 
     pass

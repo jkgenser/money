@@ -9,6 +9,16 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
+
+DATABASE = {
+    'drivername': 'postgres',
+    'host': 'localhost',
+    'port': '5432',
+    'username': 'jerrygenser',
+    'password': '',
+    'database': 'money'
+}
+
 BOT_NAME = 'alpha'
 
 SPIDER_MODULES = ['alpha.spiders']
@@ -44,6 +54,10 @@ DOWNLOAD_DELAY=3
 #   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
 #   'Accept-Language': 'en',
 #}
+
+DEFAULT_REQUEST_HEADERS = {
+    'Accept-Language': 'en'
+}
 
 # Enable or disable spider middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
