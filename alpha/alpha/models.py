@@ -20,7 +20,7 @@ def create_deals_table(engine):
     DeclarativeBase.metadata.create_all(engine)
 
 
-class ArticleLinks(DeclarativeBase)
+class ArticleLinks(DeclarativeBase):
     """SQLAlchemy ArticleLinks model"""
     __tablename__ = "article_links"
 

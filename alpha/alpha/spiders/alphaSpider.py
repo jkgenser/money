@@ -17,7 +17,7 @@ class AlphaspiderSpider(scrapy.Spider):
     base_url = 'http://seekingalpha.com/articles?page='
     start_urls = list()
 
-    for i in range(2,1000):
+    for i in range(2,10):
         next_link = base_url + str(i)
         start_urls.append(next_link)
 
@@ -26,6 +26,8 @@ class AlphaspiderSpider(scrapy.Spider):
         article_links = response.xpath('//*[@id="content_wrapper"]/div/div[2]/div[2]/div[2]/ul/*/div/a/@href').extract()
         author_links = response.xpath('//*[@id="content_wrapper"]/div/div[2]/div[2]/div[2]/ul/*/div/div/a/@href').extract()
         time = response.xpath('//*[@id="content_wrapper"]/div/div[2]/div[2]/div[2]/ul/*/div/div/text()').extract()
+
+
         item['article_links'] = article_links
         item['author_links'] = author_links
         item['time_pub'] = time_pub
