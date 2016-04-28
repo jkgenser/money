@@ -10,3 +10,6 @@ class Config(object):
 class DevelopmentConfig(Config):
     DEVELOPMENT = True
     DEBUG = True
+
+class ProductionConfig(Config):
+    DEBUG = False
