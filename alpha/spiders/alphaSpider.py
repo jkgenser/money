@@ -157,7 +157,7 @@ class AlphaSpider(scrapy.Spider):
 
         if primary_topic == []:
             primary_topic = selector.xpath('//*[@id="sa-nav"]//li[@class="active"]//text()').extract()
-            return secondary_topic
+            return primary_topic
 
 
     def get_secondary_topic(self, selector):
