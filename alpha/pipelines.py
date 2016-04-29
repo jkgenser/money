@@ -13,7 +13,6 @@ from models import Articles
 
 
 
-
 class ArticlePipeline(object):
     # def __init__(self):
 
@@ -22,9 +21,6 @@ class ArticlePipeline(object):
     def process_item(self, item, spider):
         db.session.add(Articles(**item))
         db.session.commit()
-
-
-
 
 
 

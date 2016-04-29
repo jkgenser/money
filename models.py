@@ -12,6 +12,12 @@ class Articles(db.Model):
     author_url = db.Column(db.String())
     article_url = db.Column(db.String())
     covered = db.Column(JSON)
+    summary = db.Column(JSON)
+    body = db.Column(JSON)
+    tags = db.Column(JSON) # not sure what field type it is going to be yet
+    prim_topic = db.Column(db.String())
+    sec_topic = db.Column(db.String())
+
 
 
 
