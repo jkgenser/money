@@ -17,10 +17,17 @@ class ArticlePipeline(object):
     # def __init__(self):
 
 
-
     def process_item(self, item, spider):
-        db.session.add(Articles(**item))
-        db.session.commit()
+
+        if db.session.query(Articles).get(item['article_id']) == None:
+            db.session.add(Articles(**item))
+            db.session.commit()
+            print("article information added to db")
+
+        else:
+            print("article already in db, don't add to db")
+
+
 
 
 

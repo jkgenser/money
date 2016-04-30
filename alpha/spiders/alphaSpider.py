@@ -97,12 +97,11 @@ class AlphaSpider(scrapy.Spider):
         item['covered'] = self.get_covered(sel)
         item['body'] = self.get_body(sel)
         item['tags'] = self.get_tags(sel)
-        item['holders'] = self.get_holders(sel)
         item['prim_topic'] = self.get_primary_topic(sel)
         item['sec_topic'] = self.get_secondary_topic(sel)
 
-        from scrapy.shell import inspect_response
-        inspect_response(response, self)
+        # from scrapy.shell import inspect_response
+        # inspect_response(response, self)
 
         print(item)
         print(item['article_id'])
@@ -148,7 +147,7 @@ class AlphaSpider(scrapy.Spider):
 
 
     def get_tags(self, selector):
-        tags = response.xpath('//*[@id="about-c"]/div[*]//span/text()').extract()
+        tags = selector.xpath('//*[@id="about-c"]/div[*]//span/text()').extract()
         return tags
 
 
@@ -162,7 +161,7 @@ class AlphaSpider(scrapy.Spider):
 
     def get_secondary_topic(self, selector):
         secondary_topic = selector.xpath('//*[@id="nav_dividend_ideas_tab"]/a//text()').extract()
-            return secondary_topic
+        return secondary_topic
 
 
 

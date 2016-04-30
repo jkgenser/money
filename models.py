@@ -14,7 +14,7 @@ class Articles(db.Model):
     covered = db.Column(JSON)
     summary = db.Column(JSON)
     body = db.Column(JSON)
-    tags = db.Column(JSON) # not sure what field type it is going to be yet
+    tags = db.Column(JSON) # not sure what field type it is going to be yet, JSON for now
     prim_topic = db.Column(db.String())
     sec_topic = db.Column(db.String())
 
@@ -27,4 +27,4 @@ class Articles(db.Model):
     #     self.result_no_stop_words = result_no_stop_words
 
     def __repr__(self):
-        return '<id {}>'.format(self.id)
+        return '<article_id {}>'.format(self.article_id)
