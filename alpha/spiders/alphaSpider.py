@@ -6,6 +6,8 @@ from scrapy import Spider
 from alpha.items import Article
 from datetime import datetime
 import os
+from app import db
+from models import Articles
 
 SEEKING_ALPHA_USERNAME = os.environ['SEEKING_ALPHA_USERNAME']
 SEEKING_ALPHA_PASSWORD = os.environ['SEEKING_ALPHA_PASSWORD']
@@ -29,7 +31,7 @@ class AlphaSpider(scrapy.Spider):
     # start_urls = ['http://seekingalpha.com/articles?page=2']
     start_urls = ['http://seekingalpha.com/account/login']
     scrape_urls = ['http://seekingalpha.com/articles?page=2',
-                        'http://seekingalpha.com/articles?page=3']
+                        'http://seekingalpha.com/articles?page=4']
 
     # for i in range(2,5):
     #     next_link = base_url + str(i)
@@ -78,7 +80,16 @@ class AlphaSpider(scrapy.Spider):
 
         # Generate the follow-up urls to actually scrape
         for article_url in article_urls:
-            yield Request(article_url, callback=self.parse_articles)
+
+            # first, check if the article is in our database
+            article_id = article_url.split('/')[5].split('-')[0]
+            if db.session.query(Articles).get(article_id) == None:
+                yield Request(article_url, callback=self.parse_articles)
+
+            # if its not in our database, then pass and check next url
+            else:
+                print("article in db, request next one")
+
 
     def parse_articles(self, response):
         """
@@ -98,7 +109,6 @@ class AlphaSpider(scrapy.Spider):
         item['body'] = self.get_body(sel)
         item['tags'] = self.get_tags(sel)
         item['prim_topic'] = self.get_primary_topic(sel)
-        item['sec_topic'] = self.get_secondary_topic(sel)
 
         # from scrapy.shell import inspect_response
         # inspect_response(response, self)
@@ -152,17 +162,13 @@ class AlphaSpider(scrapy.Spider):
 
 
     def get_primary_topic(self, selector):
+        print(selector.xpath('//*[@id="sa-nav"]//li//@class').extract())
         primary_topic = selector.xpath('//*[@id="sa-nav"]//li[@class="active "]//text()').extract()
 
         if primary_topic == []:
             primary_topic = selector.xpath('//*[@id="sa-nav"]//li[@class="active"]//text()').extract()
-            return primary_topic
 
-
-    def get_secondary_topic(self, selector):
-        secondary_topic = selector.xpath('//*[@id="nav_dividend_ideas_tab"]/a//text()').extract()
-        return secondary_topic
-
+        return str(primary_topic)
 
 
 

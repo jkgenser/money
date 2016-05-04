@@ -23,4 +23,3 @@ class Article(Item):
     body = Field()
     tags = Field()
     prim_topic = Field()
-    sec_topic = Field()
