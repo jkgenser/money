@@ -25,3 +25,10 @@ class Articles(db.Model):
 
     def __repr__(self):
         return '<article_id {}>'.format(self.article_id)
+
+
+
+class Article_urls(db.Model):
+
+    article_id = db.Column(db.Integer, primary_key=True)
+    url = db.Column(db.String())

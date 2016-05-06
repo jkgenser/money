@@ -87,7 +87,7 @@ class AlphaSpider(scrapy.Spider):
 
         if self.a_index >= len(self.article_urls):  # if all of the articles in the list have been parsed
             self.a_index = 0                        # reset the article list index
-            del self.article_urls[:]                # delete elements in the current article list
+            self.article_urls = []                  # delete elements in the current article list
             self.p_index += 1                       # increment article page index
             return Request(self.login_url2, callback=self.after_login)
 
