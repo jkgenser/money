@@ -6,6 +6,8 @@ class Config(object):
     TESTING = False
     CSRF_ENABLED = True
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+    DEVELOPMENT = True
+    DEBUG = True
 
 class DevelopmentConfig(Config):
     DEVELOPMENT = True

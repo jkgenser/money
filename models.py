@@ -15,8 +15,6 @@ class Articles(db.Model):
     summary = db.Column(JSON)
     body = db.Column(JSON)
     tags = db.Column(JSON) # not sure what field type it is going to be yet, JSON for now
-    prim_topic = db.Column(db.String())
-
 
 
 

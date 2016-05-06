@@ -22,4 +22,3 @@ class Article(Item):
     summary = Field()
     body = Field()
     tags = Field()
-    prim_topic = Field()

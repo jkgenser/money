@@ -14,7 +14,7 @@ SEEKING_ALPHA_PASSWORD = os.environ['SEEKING_ALPHA_PASSWORD']
 
 class AlphaSpider(scrapy.Spider):
     """
-    This class defines the rules used to extract inforamtion from the urls we scrape.
+    This class defines the rules used to extract information from the urls we scrape.
     First, collect all of the urls of a page and then issue a request for each url.
     This request results in a page corresponding to a article from that list. Extract
     the relevant information from that article.
@@ -28,10 +28,13 @@ class AlphaSpider(scrapy.Spider):
 
     base_url = 'www.seekingalpha.com/'
     protocol = 'http'
-    # start_urls = ['http://seekingalpha.com/articles?page=2']
     start_urls = ['http://seekingalpha.com/account/login']
     scrape_urls = []
-    index = -1
+    p_index = 0
+    a_index = 0
+    login_url1 = 'http://seekingalpha.com/account/email_preferences'
+    login_url2 = 'http://seekingalpha.com/account/login?user_email=jerrygenser@gmail.com&slugs='
+    article_urls = []
 
     for i in range(2,8000):
         scrape_urls.append('http://seekingalpha.com/articles?page=' + str(i))
@@ -52,57 +55,50 @@ class AlphaSpider(scrapy.Spider):
 
     def after_login(self, response):
         """
-        Confirm login worked correctly
+        Confirm login worked correctly; if so, then start crawling the list of articles
         """
-        if response.request.url == 'http://seekingalpha.com/account/email_preferences':
+        if response.request.url in [self.login_url1, self.login_url2]:
             print('Login succesful!', 'starting to scrape...')
-
-            # Create article list full urls
-
-            # contingent on login success, start yielding scrape_urls
-            # for url in self.scrape_urls:
-            #     yield Request(url, callback=self.parse_list)
-
+            if self.p_index < len(self.scrape_urls):
+                return Request(self.scrape_urls[self.p_index], callback=self.make_list)
 
         else:
             print('Login failed!')
             return
 
 
-
-
-
-    def parse_list(self, response):
+    def make_list(self, response):
         """
         For every url on the article list pages, extract the urls of the articles
         on those pages
         """
         sel = Selector(response)
         url_list = sel.xpath('//*[@id="content_wrapper"]/div/div[2]/div[2]/div[2]/ul/*/div/a/@href').extract()
-        article_urls = []
 
-
+        # Create a list of requestable URLs from the url list
         for url in url_list:
-            article_urls.append(self.protocol + '://' + self.base_url + url)
+            self.article_urls.append(self.protocol + '://' + self.base_url + url)
+
+        return self.article_check()
 
 
-        if self.index >= len(self.scrape_urls):
-                return
+    def article_check(self):
+
+        if self.a_index >= len(self.article_urls):
+            self.a_index = 0
+            self.p_index += 1
+            return Request(self.login_url1, callback=self.after_login)
+
         else:
-            self.index +=1
-            return Request(self.scrape_urls[self.index], callback = self.parse_list)
+            if self.a_index < len(self.article_urls):
+                article_id = self.article_urls[self.a_index].split('/')[5].split('-')[0]
+                if db.session.query(Articles).get(article_id) == None:
 
-        # # Generate the follow-up urls to actually scrape
-        # for article_url in article_urls:
-        #
-        #     # first, check if the article is in our database
-        #     article_id = article_url.split('/')[5].split('-')[0]
-        #     if db.session.query(Articles).get(article_id) == None:
-        #         yield Request(article_url, callback=self.parse_articles)
-        #
-        #     # if its not in our database, then pass and check next url
-        #     else:
-        #         print("article in db, request next one")
+                    return Request(self.article_urls[self.a_index], callback=self.parse_articles)
+                else:
+                    self.a_index += 1
+                    return self.article_check()
+
 
 
     def parse_articles(self, response):
@@ -122,13 +118,12 @@ class AlphaSpider(scrapy.Spider):
         item['covered'] = self.get_covered(sel)
         item['body'] = self.get_body(sel)
         item['tags'] = self.get_tags(sel)
-        item['prim_topic'] = self.get_primary_topic(sel)
 
         # from scrapy.shell import inspect_response
         # inspect_response(response, self)
 
         print(item)
-        print(item['article_id'])
+        self.a_index += 1
 
         return item
 
@@ -173,19 +168,6 @@ class AlphaSpider(scrapy.Spider):
     def get_tags(self, selector):
         tags = selector.xpath('//*[@id="about-c"]/div[*]//span/text()').extract()
         return tags
-
-
-    def get_primary_topic(self, selector):
-        print(selector.xpath('//*[@id="sa-nav"]//li//@class').extract())
-        primary_topic = selector.xpath('//*[@id="sa-nav"]//li[@class="active "]//text()').extract()
-
-        if primary_topic == []:
-            primary_topic = selector.xpath('//*[@id="sa-nav"]//li[@class="active"]//text()').extract()
-
-        return str(primary_topic)
-
-
-
 
 
 
