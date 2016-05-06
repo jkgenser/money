@@ -62,11 +62,7 @@ class AlphaSpider(scrapy.Spider):
             # contingent on login success, start yielding scrape_urls
             # for url in self.scrape_urls:
             #     yield Request(url, callback=self.parse_list)
-            if self.index >= len(self.scrape_urls):
-                return
-            else:
-                self.index +=1
-                return Request(self.scrape_urls[self.index], callback = self.parse_list)
+
 
         else:
             print('Login failed!')
@@ -89,17 +85,24 @@ class AlphaSpider(scrapy.Spider):
         for url in url_list:
             article_urls.append(self.protocol + '://' + self.base_url + url)
 
-        # Generate the follow-up urls to actually scrape
-        for article_url in article_urls:
 
-            # first, check if the article is in our database
-            article_id = article_url.split('/')[5].split('-')[0]
-            if db.session.query(Articles).get(article_id) == None:
-                yield Request(article_url, callback=self.parse_articles)
+        if self.index >= len(self.scrape_urls):
+                return
+        else:
+            self.index +=1
+            return Request(self.scrape_urls[self.index], callback = self.parse_list)
 
-            # if its not in our database, then pass and check next url
-            else:
-                print("article in db, request next one")
+        # # Generate the follow-up urls to actually scrape
+        # for article_url in article_urls:
+        #
+        #     # first, check if the article is in our database
+        #     article_id = article_url.split('/')[5].split('-')[0]
+        #     if db.session.query(Articles).get(article_id) == None:
+        #         yield Request(article_url, callback=self.parse_articles)
+        #
+        #     # if its not in our database, then pass and check next url
+        #     else:
+        #         print("article in db, request next one")
 
 
     def parse_articles(self, response):
