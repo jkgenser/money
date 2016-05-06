@@ -49,7 +49,8 @@ class AlphaSpider(scrapy.Spider):
             response,
             formxpath='//*[@id="orthodox_login"]',
             formdata={'user[email]': SEEKING_ALPHA_USERNAME, 'user[password]': SEEKING_ALPHA_PASSWORD},
-            callback=self.after_login
+            callback=self.after_login,
+            dont_filter=True
         )
 
 
@@ -60,7 +61,7 @@ class AlphaSpider(scrapy.Spider):
         if response.request.url in [self.login_url1, self.login_url2]:
             print('Login succesful!', 'starting to scrape...')
             if self.p_index < len(self.scrape_urls):
-                return Request(self.scrape_urls[self.p_index], callback=self.make_list)
+                return Request(self.scrape_urls[self.p_index], callback=self.make_list, dont_filter=True)
 
         else:
             print('Login failed!')
@@ -84,19 +85,20 @@ class AlphaSpider(scrapy.Spider):
 
     def article_check(self):
 
-        if self.a_index >= len(self.article_urls):
-            self.a_index = 0
-            self.p_index += 1
-            return Request(self.login_url1, callback=self.after_login)
+        if self.a_index >= len(self.article_urls):  # if all of the articles in the list have been parsed
+            self.a_index = 0                        # reset the article list index
+            del self.article_urls[:]                # delete elements in the current article list
+            self.p_index += 1                       # increment article page index
+            return Request(self.login_url2, callback=self.after_login)
 
         else:
             if self.a_index < len(self.article_urls):
                 article_id = self.article_urls[self.a_index].split('/')[5].split('-')[0]
                 if db.session.query(Articles).get(article_id) == None:
-
                     return Request(self.article_urls[self.a_index], callback=self.parse_articles)
                 else:
                     self.a_index += 1
+                    print("don't request article, arleady in db")
                     return self.article_check()
 
 
@@ -125,7 +127,22 @@ class AlphaSpider(scrapy.Spider):
         print(item)
         self.a_index += 1
 
-        return item
+
+        return self.process_item(item)
+
+
+    def process_item(self, item):
+
+        if db.session.query(Articles).get(item['article_id']) == None:
+            db.session.add(Articles(**item))
+            db.session.commit()
+            print("article information added to db")
+            return self.article_check()
+
+        else:
+            print("article already in db, don't add to db")
+            return self.article_check()
+
 
 
     def get_pub_date(self, selector):
@@ -141,12 +158,18 @@ class AlphaSpider(scrapy.Spider):
 
     def get_author(self, selector):
         author = selector.xpath('//*[@id="author-hd"]/div[2]/div[1]/a/span/text()').extract()
-        return str(author[0])
+        try:
+            return str(author[0])
+        except:
+            return 'no author listed'
 
 
     def get_author_url(self, selector):
         author_url = selector.xpath('//*[@id="author-hd"]/div[2]/div[1]/a/@href').extract()
-        return str(author_url[0])
+        try:
+            return str(author_url[0])
+        except:
+            return 'author url not listed'
 
     def get_summary(self, selector):
         summary = selector.xpath('//*[@id="a-cont"]/div[1]/div[@itemprop="description"]//p/text()').extract()
