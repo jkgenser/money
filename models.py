@@ -2,8 +2,8 @@ from app import db
 from sqlalchemy.dialects.postgresql import JSON
 
 
-class Articles(db.Model):
-    __tablename__ = 'articles'
+class Article(db.Model):
+    __tablename__ = 'article'
 
     article_id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String())
@@ -17,7 +17,6 @@ class Articles(db.Model):
     tags = db.Column(JSON) # not sure what field type it is going to be yet, JSON for now
 
 
-
     # def __init__(self, url, result_all, result_no_stop_words):
     #     self.url = url
     #     self.result_all = result_all
@@ -25,10 +24,3 @@ class Articles(db.Model):
 
     def __repr__(self):
         return '<article_id {}>'.format(self.article_id)
-
-
-
-class Article_urls(db.Model):
-
-    article_id = db.Column(db.Integer, primary_key=True)
-    url = db.Column(db.String())

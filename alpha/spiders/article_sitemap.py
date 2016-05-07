@@ -3,7 +3,7 @@ from scrapy.selector import Selector
 from scrapy.http.request import Request
 from scrapy import Spider
 from app import db
-from models import Article_urls
+from models import Article
 
 class ArticleSitemap(scrapy.Spider):
 
@@ -21,15 +21,15 @@ class ArticleSitemap(scrapy.Spider):
         for url in article_urls:
             id = self.get_id(url)
 
-            if db.session.query(Article_urls).get(id) == None:
-                item = {}
-                item['article_id'] = id
-                item['url'] = url
-                db.session.add(Article_urls(**item))
+            if db.session.query(Article).get(id) == None:
+                article = {}
+                article['article_id'] = id
+                article['article_url'] = url
+                db.session.add(Article(**article))
                 db.session.commit()
-                print('article: ' + id + ' has been loaded to db.')
-
-
+                print('article_id: ' + id + ' has been loaded to db.')
+            else:
+                print('aritcle_id: ' + id + 'already in db.')
 
 
     def get_id(self, url):

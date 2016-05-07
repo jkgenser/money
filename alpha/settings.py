@@ -32,7 +32,10 @@ NEWSPIDER_MODULE = 'alpha.spiders'
 # USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.86 Safari/537.36'
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS=1
+CONCURRENT_REQUESTS = 2
+CONCURRENT_REQUESTS_PER_DOMAIN = 2
+AUTOTHROTTLE_ENABLED = False
+DOWNLOAD_TIMEOUT = 600
 RANDOMIZE_DOWNLOAD_DELAY=True
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
@@ -72,6 +75,9 @@ DOWNLOADER_MIDDLEWARES = {
         'alpha.rotate_useragent.RotateUserAgentMiddleware' :400
     }
 
+# DOWNLOADER_MIDDLEWARES = {'scrapy_crawlera.CrawleraMiddleware': 600}
+# CRAWLERA_ENABLED = True
+# CRAWLERA_APIKEY = '1e4002ac651041cca05e1c37c2692b83'
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
