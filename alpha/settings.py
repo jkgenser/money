@@ -70,14 +70,14 @@ DEFAULT_REQUEST_HEADERS = {
 
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
-DOWNLOADER_MIDDLEWARES = {
-        'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware' : None,
-        'alpha.rotate_useragent.RotateUserAgentMiddleware' :400
-    }
+# DOWNLOADER_MIDDLEWARES = {
+#         'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware' : None,
+#         'alpha.rotate_useragent.RotateUserAgentMiddleware' :400
+#     }
 
-# DOWNLOADER_MIDDLEWARES = {'scrapy_crawlera.CrawleraMiddleware': 600}
-# CRAWLERA_ENABLED = True
-# CRAWLERA_APIKEY = '1e4002ac651041cca05e1c37c2692b83'
+DOWNLOADER_MIDDLEWARES = {'scrapy_crawlera.CrawleraMiddleware': 600}
+CRAWLERA_ENABLED = True
+CRAWLERA_APIKEY = '1e4002ac651041cca05e1c37c2692b83'
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
