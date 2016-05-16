@@ -6,6 +6,12 @@ from scrapy.selector import Selector
 from scrapy.http.request import Request
 
 class ArticleSpider(scrapy.Spider):
+    '''
+    This class crawls through /articles and extracts every single article url
+    that has ever been published on seekingalpha.
+
+    Afer the article urls are extracted, they are later retrieved and parsed.
+    '''
     name = "article_list"
     allowed_domains = "http://www.seekingalpha.com"
     start_urls = []

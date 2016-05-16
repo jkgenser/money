@@ -32,8 +32,8 @@ NEWSPIDER_MODULE = 'alpha.spiders'
 # USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.86 Safari/537.36'
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 2
-CONCURRENT_REQUESTS_PER_DOMAIN = 2
+CONCURRENT_REQUESTS = 10
+CONCURRENT_REQUESTS_PER_DOMAIN = 10
 AUTOTHROTTLE_ENABLED = False
 DOWNLOAD_TIMEOUT = 600
 RANDOMIZE_DOWNLOAD_DELAY=True
@@ -47,8 +47,8 @@ DOWNLOAD_DELAY=2
 #CONCURRENT_REQUESTS_PER_IP=16
 
 # Disable cookies (enabled by default)
-#COOKIES_ENABLED=False
-
+COOKIES_ENABLED=True
+# COOKIES_DEBUG=True
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED=False
 

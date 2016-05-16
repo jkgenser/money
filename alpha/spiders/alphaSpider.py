@@ -44,12 +44,15 @@ class AlphaSpider(ParseArticleLogic):
         """
         First log into the website so that I see the correct version of articles
         """
+        print(os.environ['SEEKING_ALPHA_USERNAME'], os.environ['SEEKING_ALPHA_PASSWORD'])
+        # look at class of body --> response.xpath('//body/@class').extract()
         return scrapy.FormRequest.from_response(
             response,
             formxpath='//*[@id="orthodox_login"]',
             formdata={'user[email]': os.environ['SEEKING_ALPHA_USERNAME'], 'user[password]': os.environ['SEEKING_ALPHA_PASSWORD']},
             callback=self.after_login,
-            dont_filter=True
+            dont_filter=True,
+            headers = {'X-Crawlera-Cookies': 'disable'}
         )
 
 
@@ -57,8 +60,11 @@ class AlphaSpider(ParseArticleLogic):
         """
         Confirm login worked correctly; if so, then start crawling the list of articles
         """
+        body_class = response.xpath('//body/@class').extract()
+        print(body_class)
         if response.request.url in [self.login_url1, self.login_url2]:
             print('Login succesful!', 'starting to scrape...')
+            #
             if self.p_index < len(self.scrape_urls):
                 return Request(self.scrape_urls[self.p_index], callback=self.make_list, dont_filter=True)
 
@@ -93,7 +99,7 @@ class AlphaSpider(ParseArticleLogic):
 
         else:
             if self.a_index < len(self.article_urls):
-                article_id = self.article_urls[self.a_index].split('/')[5].split('-')[0]
+                article_id = self.article_urls[self.a_index].split('/')[4].split('-')[0]
                 article = db.session.query(Article).get(article_id)
 
                 if article == None:
