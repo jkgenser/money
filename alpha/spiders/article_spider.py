@@ -110,13 +110,13 @@ class ArticleSpider(scrapy.Spider):
 
     def get_title(self, selector):
         title = selector.xpath('//*[@id="a-hd"]/h1/text()').extract()
-        return str(title[0])
+        return title[0].encode('utf-8')
 
 
     def get_author(self, selector):
         author = selector.xpath('//*[@id="author-hd"]/div[2]/div[1]/a/span/text()').extract()
         try:
-            return str(author[0])
+            return author[0].encode('utf-8')
         except:
             return 'no author listed'
 
@@ -136,7 +136,7 @@ class ArticleSpider(scrapy.Spider):
 
     def get_body(self, selector):
         body = selector.xpath('//*[@id="a-body"]//text()').extract()
-        return str(body)
+        return body
 
 
     def get_covered(self, selector):
