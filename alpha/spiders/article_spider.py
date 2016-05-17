@@ -59,7 +59,8 @@ class ArticleSpider(scrapy.Spider):
         '''
         Parse contents of each article using this function
         '''
-        print(response.xpath('//body/@class').extract())
+        body_class = response.xpath('//body/@class').extract()
+        print(body_class)
         print(self.get_tags(response))
         print(self.get_author(response))
 
@@ -68,6 +69,12 @@ class ArticleSpider(scrapy.Spider):
 
         article_id = response.request.url.split('/')[-1].split('-')[0]
         article = db.session.query(Article).get(article_id)
+
+        if body_class == 'embargo-pro-checkout pro force-pro logged-in':
+            self.p_index += 1
+            article.title = 'Pro login required'
+            db.session.commit()
+            return self.controller()
 
         if article.title == None:
             article.pub_date = self.get_pub_date(response)
