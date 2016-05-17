@@ -63,6 +63,9 @@ class ArticleSpider(scrapy.Spider):
         print(self.get_tags(response))
         print(self.get_author(response))
 
+        from scrapy.shell import inspect_response
+        inspect_response(response, self)
+
         article_id = response.request.url.split('/')[4].split('-')[0]
         article = db.session.query(Article).get(article_id)
 
