@@ -70,9 +70,15 @@ class ArticleSpider(scrapy.Spider):
         article_id = response.request.url.split('/')[-1].split('-')[0]
         article = db.session.query(Article).get(article_id)
 
-        if body_class == 'embargo-pro-checkout pro force-pro logged-in':
+        if body_class[0] == 'embargo-pro-checkout pro force-pro logged-in':
             self.p_index += 1
             article.title = 'Pro login required'
+            db.session.commit()
+            return self.controller()
+
+        if body_class[0] == 'author-research logged-in':
+            self.p_index +=1
+            article.title = 'Author research'
             db.session.commit()
             return self.controller()
 
