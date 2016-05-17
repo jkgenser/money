@@ -67,7 +67,7 @@ class ArticleSpider(scrapy.Spider):
         # from scrapy.shell import inspect_response
         # inspect_response(response, self)
 
-        article_id = response.request.url.split('/')[-1].split('-')[0]
+        article_id = self.article_urls[self.p_index].split('/')[-1].split('-')[0]
         article = db.session.query(Article).get(article_id)
 
         if body_class[0] == 'embargo-pro-checkout pro force-pro logged-in':
@@ -78,7 +78,7 @@ class ArticleSpider(scrapy.Spider):
 
         if body_class[0] == 'author-research logged-in':
             self.p_index +=1
-            article.title = 'Author research'
+            article.title = 'Author research article.'
             db.session.commit()
             return self.controller()
 
@@ -94,11 +94,12 @@ class ArticleSpider(scrapy.Spider):
             db.session.commit()
             self.p_index += 1 # iterate to next article in the list of articles to request
             print('Article {} information has been added to the database.'.format(article_id))
+            return self.controller()
 
-        else:
+        if articel.title != None:
             self.p_index += 1
             print('Article {} information is already in the database.'.format(article_id))
-        return self.controller()
+            return self.controller()
 
 
     def get_pub_date(self, selector):
@@ -123,7 +124,7 @@ class ArticleSpider(scrapy.Spider):
     def get_author_url(self, selector):
         author_url = selector.xpath('//*[@id="author-hd"]/div[2]/div[1]/a/@href').extract()
         try:
-            return str(author_url[0])
+            return author_url[0].encode('utf-8')
         except:
             return 'author url not listed'
 
