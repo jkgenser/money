@@ -66,7 +66,7 @@ class ArticleSpider(scrapy.Spider):
         from scrapy.shell import inspect_response
         inspect_response(response, self)
 
-        article_id = response.request.url.split('/')[4].split('-')[0]
+        article_id = response.request.url.split('/')[-1].split('-')[0]
         article = db.session.query(Article).get(article_id)
 
         if article.title == None:
