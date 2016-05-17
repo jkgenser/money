@@ -32,11 +32,13 @@ NEWSPIDER_MODULE = 'alpha.spiders'
 # USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.86 Safari/537.36'
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 10
-CONCURRENT_REQUESTS_PER_DOMAIN = 10
+CONCURRENT_REQUESTS = 16
+CONCURRENT_REQUESTS_PER_DOMAIN = 16
 AUTOTHROTTLE_ENABLED = False
 DOWNLOAD_TIMEOUT = 600
 RANDOMIZE_DOWNLOAD_DELAY=True
+AUTOTHROTTLE_ENABLED = False
+
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
