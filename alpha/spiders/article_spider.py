@@ -10,7 +10,7 @@ from scrapy.http.request import Request
 class ArticleSpider(scrapy.Spider):
     name = "article_list"
     allowed_domains = "http://wwww.seekingalpha.com"
-    query = Article.query.filter(Article.title==None).limit(5000).all() # get articles without title from db
+    query = Article.query.filter(Article.titles is None).limit(5000).all() # get articles without title from db
     article_urls = [item.article_url for item in query]
     start_urls = ['http://seekingalpha.com/account/login']
     p_index = 0
@@ -25,14 +25,13 @@ class ArticleSpider(scrapy.Spider):
             formdata={'user[email]': os.environ['SEEKING_ALPHA_USERNAME'], 'user[password]': os.environ['SEEKING_ALPHA_PASSWORD']},
             callback=self.after_login,
             dont_filter=True,
-            headers = {'X-Crawlera-Cookies': 'disable'}
+            headers={'X-Crawlera-Cookies': 'disable'}
         )
 
-
     def after_login(self, response):
-        '''
+        """
         Confirm login worked correctly; if so, then start "controller" logic
-        '''
+        """
         print(response.request.url)
 
         if response.request.url in self.login_urls:
@@ -44,16 +43,14 @@ class ArticleSpider(scrapy.Spider):
             print(response.request.url)
             return
 
-
     def controller(self):
-        '''
+        """
         Crawling logic post-login
         Return this function after storing each object in the database
-        '''
+        """
         if self.p_index < len(self.article_urls):
             return Request(self.article_urls[self.p_index], callback=self.parse_article, dont_filter=True,
                            headers = {'X-Crawlera-Cookies': 'disable'})
-
 
     def parse_article(self, response):
         '''
@@ -82,7 +79,7 @@ class ArticleSpider(scrapy.Spider):
             db.session.commit()
             return self.controller()
 
-        if article.title == None:
+        if article.title is None:
             article.pub_date = self.get_pub_date(response)
             article.title = self.get_title(response)
             article.author = self.get_author(response)
@@ -96,7 +93,7 @@ class ArticleSpider(scrapy.Spider):
             print('Article {} information has been added to the database.'.format(article_id))
             return self.controller()
 
-        if articel.title != None:
+        if articel.title is not None:
             self.p_index += 1
             print('Article {} information is already in the database.'.format(article_id))
             return self.controller()
@@ -119,7 +116,6 @@ class ArticleSpider(scrapy.Spider):
             return author[0].encode('utf-8')
         except:
             return 'no author listed'
-
 
     def get_author_url(self, selector):
         author_url = selector.xpath('//*[@id="author-hd"]/div[2]/div[1]/a/@href').extract()

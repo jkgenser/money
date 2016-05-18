@@ -24,7 +24,6 @@ class ArticleSpider(scrapy.Spider):
     for i in range(2,8000):
         start_urls.append('http://seekingalpha.com/articles?page=' + str(i))
 
-
     def parse(self, response):
 
         # grab list of article URLs on the page
@@ -36,7 +35,7 @@ class ArticleSpider(scrapy.Spider):
             article_id = int(url.split('/')[2].split('-')[0])
 
             # check if URL is in the database
-            if db.session.query(Article).get(article_id) != None:
+            if db.session.query(Article).get(article_id) is not None:
                 print('Article {} is already in the database, pass.'.format(str(article_id)))
                 pass
 
