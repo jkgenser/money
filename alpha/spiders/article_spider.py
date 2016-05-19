@@ -11,7 +11,8 @@ class ArticleSpider(scrapy.Spider):
     name = "article_list"
     allowed_domains = "http://wwww.seekingalpha.com"
     query = Article.query.filter(Article.title == None).limit(5000).all() # get articles without title from db
-    article_urls = [item.article_url for item in query]
+    article_urls = ['http://seekingalpha.com/article/3067836-federal-budget-deficit-3-percent-of-gdp']
+    # article_urls = [item.article_url for item in query]
     start_urls = ['http://seekingalpha.com/account/login']
     p_index = 0
     login_urls = ['http://seekingalpha.com/account/email_preferences']
@@ -100,7 +101,7 @@ class ArticleSpider(scrapy.Spider):
             print('Article {} information has been added to the database.'.format(article_id))
             return self.controller()
 
-        if articel.title is not None:
+        if article.title is not None:
             self.p_index += 1
             print('Article {} information is already in the database.'.format(article_id))
             return self.controller()
