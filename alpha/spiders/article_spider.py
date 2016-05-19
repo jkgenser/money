@@ -11,10 +11,12 @@ class ArticleSpider(scrapy.Spider):
     name = "article_list"
     allowed_domains = "http://wwww.seekingalpha.com"
     query = Article.query.filter(Article.title == None).limit(5000).all() # get articles without title from db
-    article_urls = [item.article_url for item in query]
+    #article_urls = [item.article_url for item in query]
+    article_urls = ['http://seekingalpha.com/article/50481-hire-an-intern']
     start_urls = ['http://seekingalpha.com/account/login']
     p_index = 0
     login_urls = ['http://seekingalpha.com/account/email_preferences']
+    handle_httpstatus_list = [404]
 
     def parse(self, response):
 
@@ -60,12 +62,18 @@ class ArticleSpider(scrapy.Spider):
         print(body_class)
         print(self.get_tags(response))
         print(self.get_author(response))
-
+        print(response.status)
         # from scrapy.shell import inspect_response
         # inspect_response(response, self)
 
         article_id = self.article_urls[self.p_index].split('/')[-1].split('-')[0]
         article = db.session.query(Article).get(article_id)
+
+        if response.status == 404:
+            self.p_index += 1
+            article.title = 'Article not found (404 error)'
+            db.session.commit()
+            return self.controller()
 
         if body_class[0] == 'embargo-pro-checkout pro force-pro logged-in':
             self.p_index += 1

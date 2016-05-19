@@ -14,6 +14,7 @@ class ArticleSpider(scrapy.Spider):
     '''
     name = "article_list"
     allowed_domains = "http://www.seekingalpha.com"
+    base_url = "http://seekingalpha.com"
     start_urls = []
 
     # get all article IDs from the db
@@ -31,7 +32,7 @@ class ArticleSpider(scrapy.Spider):
 
         for url in urls:
             # make URL requestable
-            full_url = self.allowed_domains + url
+            full_url = self.base_url + url
             article_id = int(url.split('/')[2].split('-')[0])
 
             # check if URL is in the database
