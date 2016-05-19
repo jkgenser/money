@@ -11,8 +11,7 @@ class ArticleSpider(scrapy.Spider):
     name = "article_list"
     allowed_domains = "http://wwww.seekingalpha.com"
     query = Article.query.filter(Article.title == None).limit(5000).all() # get articles without title from db
-    #article_urls = [item.article_url for item in query]
-    article_urls = ['http://seekingalpha.com/article/50481-hire-an-intern']
+    article_urls = [item.article_url for item in query]
     start_urls = ['http://seekingalpha.com/account/login']
     p_index = 0
     login_urls = ['http://seekingalpha.com/account/email_preferences']
