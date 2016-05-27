@@ -12,6 +12,11 @@ manager = Manager(app)
 
 manager.add_command('db', MigrateCommand)
 
+# @manager.command
+# def run_analysis():
+#     from analysis import query
+#     return query()
+
 
 if __name__ == '__main__':
     manager.run()

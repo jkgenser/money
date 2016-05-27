@@ -9,10 +9,3 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 from models import Article
-
-# @app.route('/')
-# def hello():
-#     return "Hello World!"
-#
-# if __name__ == '__main__':
-#     app.run()
