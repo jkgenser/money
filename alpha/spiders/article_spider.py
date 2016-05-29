@@ -115,12 +115,16 @@ class ArticleSpider(scrapy.Spider):
 
 
     def get_pub_date(self, selector):
-        raw_date = selector.xpath('//*[@id="a-hd"]/div[1]/time/@content').extract()
-        if raw_date == []:
-            raw_date = selector.xpath('//time/@content').extract()
 
-        date = datetime.strptime(raw_date[0][:10], '%Y-%m-%d').date()
-        return date
+        try:
+            raw_date = selector.xpath('//*[@id="a-hd"]/div[1]/time/@content').extract()
+            if raw_date == []:
+                raw_date = selector.xpath('//time/@content').extract()
+
+            date = datetime.strptime(raw_date[0][:10], '%Y-%m-%d').date()
+            return date
+        except:
+            return 'date not available'
 
 
     def get_title(self, selector):
