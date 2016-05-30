@@ -81,6 +81,10 @@ class ArticleSpider(scrapy.Spider):
             db.session.commit()
             return self.controller()
 
+        if response.status == 503:
+            self.p_index +=1
+            article.title = 'Service Unavailable (503 error)'
+            return self.controller()
 
         if body_class[0] == 'embargo-pro-checkout pro force-pro logged-in':
             self.p_index += 1
