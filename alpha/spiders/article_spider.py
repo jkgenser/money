@@ -132,12 +132,14 @@ class ArticleSpider(scrapy.Spider):
 
 
     def get_title(self, selector):
-        title = selector.xpath('//*[@id="a-hd"]/h1/text()').extract()
+        try:
+            title = selector.xpath('//*[@id="a-hd"]/h1/text()').extract()
 
-        if title is None:
-            title = selector.xpath('//h1/text()')
-
-        return title[0].encode('utf-8')
+            if title is None:
+                title = selector.xpath('//h1/text()')
+            return title[0].encode('utf-8')
+        except:
+            return 'title not available'
 
 
     def get_author(self, selector):
