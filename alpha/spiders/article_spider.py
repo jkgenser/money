@@ -128,7 +128,7 @@ class ArticleSpider(scrapy.Spider):
             date = datetime.strptime(raw_date[0][:10], '%Y-%m-%d').date()
             return date
         except:
-            return 'date not available'
+            return None
 
 
     def get_title(self, selector):
